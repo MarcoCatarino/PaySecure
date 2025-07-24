@@ -1,0 +1,345 @@
+<!-- TransactionListPage.xaml -->
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    x:Class="PaySecure.Views.TransactionListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PaySecure.ViewModels"
+    x:DataType="vm:TransactionViewModel"
+    Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="+" Command="{Binding ShowAddTransactionCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <!-- Lista principal -->
+        <ScrollView IsVisible="{Binding IsAddingTransaction, Converter={StaticResource InvertedBoolConverter}}">
+            <StackLayout Spacing="20" Padding="20">
+
+                <!-- Barra de búsqueda -->
+                <Frame BackgroundColor="White" CornerRadius="10" Padding="15" HasShadow="True">
+                    <Entry 
+                        Text="{Binding SearchText}"
+                        Placeholder="Buscar transacciones..."
+                        ReturnCommand="{Binding SearchTransactionsCommand}" />
+                </Frame>
+
+                <!-- Lista de transacciones -->
+                <CollectionView ItemsSource="{Binding Transactions}">
+                    <CollectionView.EmptyView>
+                        <StackLayout Padding="40">
+                            <Label 
+                                Text="📝"
+                                FontSize="64"
+                                HorizontalOptions="Center"
+                                TextColor="#CCC" />
+                            <Label 
+                                Text="No hay transacciones"
+                                HorizontalOptions="Center"
+                                TextColor="#999"
+                                FontSize="18"
+                                Margin="0,10,0,0" />
+                            <Button 
+                                Text="Crear Primera Transacción"
+                                Command="{Binding ShowAddTransactionCommand}"
+                                BackgroundColor="#007bff"
+                                TextColor="White"
+                                CornerRadius="25"
+                                Margin="0,20,0,0" />
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <!-- Acciones de deslizar -->
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem 
+                                            Text="Editar"
+                                            BackgroundColor="#ffc107"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=EditTransactionCommand}"
+                                            CommandParameter="{Binding}" />
+                                        <SwipeItem 
+                                            Text="Eliminar"
+                                            BackgroundColor="#dc3545"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=DeleteTransactionCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+
+                                <!-- Contenido de la transacción -->
+                                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" Margin="0,5" HasShadow="True">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+
+                                        <!-- Icono según tipo -->
+                                        <Frame Grid.Column="0" 
+                                               BackgroundColor="#f8f9fa"
+                                               CornerRadius="25"
+                                               WidthRequest="50"
+                                               HeightRequest="50"
+                                               Padding="0"
+                                               HasShadow="False">
+                                            <Label 
+                                                FontSize="24"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center">
+                                                <Label.Text>
+                                                    <MultiBinding Converter="{StaticResource TransactionTypeToIconConverter}">
+                                                        <Binding Path="Type" />
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
+                                        </Frame>
+
+                                        <!-- Información principal -->
+                                        <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <Label 
+                                                Text="{Binding Description}"
+                                                FontSize="16"
+                                                FontAttributes="Bold" />
+                                            <Label 
+                                                Text="{Binding Type}"
+                                                FontSize="12"
+                                                TextColor="#666" />
+                                            <Label 
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                                FontSize="12"
+                                                TextColor="#999" />
+                                        </StackLayout>
+
+                                        <!-- Cantidad y estado -->
+                                        <StackLayout Grid.Column="2" VerticalOptions="Center">
+                                            <Label 
+                                                Text="{Binding Amount, StringFormat='${0:F2}'}"
+                                                FontSize="18"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="End">
+                                                <Label.TextColor>
+                                                    <MultiBinding Converter="{StaticResource AmountToColorConverter}">
+                                                        <Binding Path="Amount" />
+                                                        <Binding Path="Type" />
+                                                    </MultiBinding>
+                                                </Label.TextColor>
+                                            </Label>
+                                            <Frame 
+                                                CornerRadius="10"
+                                                Padding="8,4"
+                                                HasShadow="False"
+                                                HorizontalOptions="End">
+                                                <Frame.BackgroundColor>
+                                                    <MultiBinding Converter="{StaticResource StatusToColorConverter}">
+                                                        <Binding Path="Status" />
+                                                    </MultiBinding>
+                                                </Frame.BackgroundColor>
+                                                <Label 
+                                                    Text="{Binding Status}"
+                                                    FontSize="10"
+                                                    TextColor="White"
+                                                    FontAttributes="Bold" />
+                                            </Frame>
+                                        </StackLayout>
+                                    </Grid>
+                                </Frame>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Formulario para agregar transacción -->
+        <ScrollView IsVisible="{Binding IsAddingTransaction}">
+            <StackLayout Spacing="20" Padding="20">
+
+                <Label 
+                    Text="Nueva Transacción"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center" />
+
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                    <StackLayout Spacing="15">
+
+                        <!-- Descripción -->
+                        <StackLayout>
+                            <Label Text="Descripción *" FontAttributes="Bold" />
+                            <Entry 
+                                Text="{Binding Description}"
+                                Placeholder="Ej: Pago de servicios"
+                                BackgroundColor="#f8f9fa" />
+                        </StackLayout>
+
+                        <!-- Cantidad -->
+                        <StackLayout>
+                            <Label Text="Cantidad *" FontAttributes="Bold" />
+                            <Entry 
+                                Text="{Binding Amount}"
+                                Placeholder="0.00"
+                                Keyboard="Numeric"
+                                BackgroundColor="#f8f9fa" />
+                        </StackLayout>
+
+                        <!-- Tipo de transacción -->
+                        <StackLayout>
+                            <Label Text="Tipo de Transacción *" FontAttributes="Bold" />
+                            <Picker 
+                                ItemsSource="{Binding TransactionTypes}"
+                                SelectedItem="{Binding SelectedType}"
+                                BackgroundColor="#f8f9fa" />
+                        </StackLayout>
+
+                        <!-- Botones -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
+                            <Button 
+                                Grid.Column="0"
+                                Text="Cancelar"
+                                Command="{Binding CancelAddTransactionCommand}"
+                                BackgroundColor="#6c757d"
+                                TextColor="White"
+                                CornerRadius="25" />
+                            <Button 
+                                Grid.Column="1"
+                                Text="Guardar"
+                                Command="{Binding SaveTransactionCommand}"
+                                BackgroundColor="#28a745"
+                                TextColor="White"
+                                CornerRadius="25" />
+                        </Grid>
+
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Indicador de carga -->
+        <ActivityIndicator 
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            Color="#007bff"
+            VerticalOptions="Center"
+            HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>
+
+<!-- TransactionListPage.xaml.cs -->
+using PaySecure.ViewModels;
+
+namespace PaySecure.Views;
+
+public partial class TransactionListPage : ContentPage
+{
+    public TransactionListPage(TransactionViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
+}
+
+<!-- AddTransactionPage.xaml -->
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    x:Class="PaySecure.Views.AddTransactionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PaySecure.ViewModels"
+    x:DataType="vm:TransactionViewModel"
+    Title="Agregar Transacción">
+
+    <ScrollView>
+        <StackLayout Spacing="25" Padding="20">
+
+            <!-- Encabezado -->
+            <Frame BackgroundColor="#667eea" CornerRadius="15" Padding="20" HasShadow="True">
+                <StackLayout>
+                    <Label 
+                        Text="💰"
+                        FontSize="36"
+                        HorizontalOptions="Center"
+                        TextColor="White" />
+                    <Label 
+                        Text="Nueva Transacción"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Formulario -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="20">
+
+                    <!-- Descripción -->
+                    <StackLayout>
+                        <Label Text="Descripción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding Description}"
+                                Placeholder="Describe la transacción..."
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Cantidad -->
+                    <StackLayout>
+                        <Label Text="Cantidad (MXN) *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding Amount}"
+                                Placeholder="0.00"
+                                Keyboard="Numeric"
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Tipo -->
+                    <StackLayout>
+                        <Label Text="Tipo de Transacción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Picker 
+                                ItemsSource="{Binding TransactionTypes}"
+                                SelectedItem="{Binding SelectedType}"
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Botones de acción -->
+                    <StackLayout Spacing="15" Margin="0,30,0,0">
+                        <Button 
+                            Text="💾 Guardar Transacción"
+                            Command="{Binding SaveTransactionCommand}"
+                            BackgroundColor="#28a745"
+                            TextColor="White"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            FontSize="16"
+                            FontAttributes="Bold" />
+
+                        <Button 
+                            Text="Cancelar"
+                            Command="{Binding CancelAddTransactionCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="#6c757d"
+                            FontAttributes="Bold" />
+                    </StackLayout>
+
+                </StackLayout>
+            </Frame>
+
+            <!-- Indicador de carga -->
+            <ActivityIndicator 
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#667eea"
+                HorizontalOptions="Center" />
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

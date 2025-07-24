@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    x:Class="PaySecure.Views.PaymentPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PaySecure.ViewModels"
+    x:DataType="vm:PaymentViewModel"
+    Title="{Binding Title}">
+
+    <ScrollView>
+        <StackLayout Spacing="25" Padding="20">
+
+            <!-- Encabezado con información de Stripe -->
+            <Frame BackgroundColor="#635bff" CornerRadius="15" Padding="20" HasShadow="True">
+                <StackLayout Spacing="10">
+                    <Label 
+                        Text="💳"
+                        FontSize="36"
+                        HorizontalOptions="Center"
+                        TextColor="White" />
+                    <Label 
+                        Text="Pagos con Stripe"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center" />
+                    <Label 
+                        Text="Procesamiento seguro de pagos"
+                        FontSize="14"
+                        TextColor="#E0E0E0"
+                        HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Formulario de pago -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="20">
+
+                    <Label 
+                        Text="Información del Pago"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#333"
+                        HorizontalOptions="Center" />
+
+                    <!-- Cantidad -->
+                    <StackLayout>
+                        <Label Text="Cantidad (MXN) *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding Amount}"
+                                Placeholder="100.00"
+                                Keyboard="Numeric"
+                                FontSize="18"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                        <Label 
+                            Text="{Binding Amount, StringFormat='= ${0:F2} MXN'}"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#28a745"
+                            Margin="5,5,0,0" />
+                    </StackLayout>
+
+                    <!-- Descripción -->
+                    <StackLayout>
+                        <Label Text="Descripción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding Description}"
+                                Placeholder="¿Para qué es este pago?"
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Email del cliente -->
+                    <StackLayout>
+                        <Label Text="Email del Cliente" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding CustomerEmail}"
+                                Placeholder="cliente@ejemplo.com"
+                                Keyboard="Email"
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                </StackLayout>
+            </Frame>
+
+            <!-- Información de seguridad -->
+            <Frame BackgroundColor="#fff3cd" BorderColor="#ffeaa7" CornerRadius="10" Padding="15">
+                <StackLayout Spacing="5">
+                    <Label 
+                        Text="🔒 Seguridad Biométrica"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        TextColor="#856404" />
+                    <Label 
+                        Text="Se solicitará autenticación biométrica antes de procesar el pago"
+                        FontSize="12"
+                        TextColor="#856404" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Botones de acción -->
+            <StackLayout Spacing="15">
+
+                <!-- Procesar pago -->
+                <Button 
+                    Text="🔒 Procesar Pago con Biometría"
+                    Command="{Binding ProcessPaymentCommand}"
+                    BackgroundColor="#28a745"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="55"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    IsEnabled="{Binding IsProcessingPayment, Converter={StaticResource InvertedBoolConverter}}" />
+
+                <!-- Reembolsar último pago -->
+                <Button 
+                    Text="↩️ Reembolsar Último Pago"
+                    Command="{Binding RefundPaymentCommand}"
+                    BackgroundColor="#ffc107"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="45"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    IsVisible="{Binding PaymentIntentId, Converter={StaticResource StringIsNotNullOrEmptyConverter}}"
+                    IsEnabled="{Binding IsProcessingPayment, Converter={StaticResource InvertedBoolConverter}}" />
+
+            </StackLayout>
+
+            <!-- Estado del pago -->
+            <Frame 
+                BackgroundColor="#f8f9fa" 
+                CornerRadius="10" 
+                Padding="15"
+                IsVisible="{Binding PaymentStatus, Converter={StaticResource StringIsNotNullOrEmptyConverter}}">
+                <StackLayout>
+                    <Label 
+                        Text="Estado del Pago"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        TextColor="#333" />
+                    <Label 
+                        Text="{Binding PaymentStatus}"
+                        FontSize="14"
+                        TextColor="#666"
+                        Margin="0,5,0,0" />
+
+                    <!-- ID del Payment Intent -->
+                    <StackLayout 
+                        Orientation="Horizontal" 
+                        Spacing="5"
+                        IsVisible="{Binding PaymentIntentId, Converter={StaticResource StringIsNotNullOrEmptyConverter}}"
+                        Margin="0,10,0,0">
+                        <Label 
+                            Text="ID:"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#666" />
+                        <Label 
+                            Text="{Binding PaymentIntentId}"
+                            FontSize="10"
+                            TextColor="#666"
+                            LineBreakMode="MiddleTruncation" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- Indicador de carga -->
+            <StackLayout 
+                IsVisible="{Binding IsProcessingPayment}"
+                Spacing="10"
+                Margin="0,20,0,0">
+                <ActivityIndicator 
+                    IsRunning="{Binding IsProcessingPayment}"
+                    Color="#635bff"
+                    HorizontalOptions="Center" />
+                <Label 
+                    Text="Procesando pago..."
+                    FontSize="14"
+                    TextColor="#666"
+                    HorizontalOptions="Center" />
+            </StackLayout>
+
+            <!-- Información sobre Stripe -->
+            <Frame BackgroundColor="#f1f3f4" CornerRadius="10" Padding="15" Margin="0,20,0,0">
+                <StackLayout Spacing="5">
+                    <Label 
+                        Text="ℹ️ Información"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        TextColor="#5f6368" />
+                    <Label 
+                        Text="• Los pagos se procesan mediante Stripe"
+                        FontSize="12"
+                        TextColor="#5f6368" />
+                    <Label 
+                        Text="• Compatible con tarjetas de débito y crédito mexicanas"
+                        FontSize="12"
+                        TextColor="#5f6368" />
+                    <Label 
+                        Text="• Autenticación biométrica requerida para mayor seguridad"
+                        FontSize="12"
+                        TextColor="#5f6368" />
+                    <Label 
+                        Text="• Todas las transacciones se guardan localmente"
+                        FontSize="12"
+                        TextColor="#5f6368" />
+                </StackLayout>
+            </Frame>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

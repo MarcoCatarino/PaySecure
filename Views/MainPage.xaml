@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    x:Class="PaySecure.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PaySecure.ViewModels"
+    x:DataType="vm:MainViewModel"
+    Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Salir" Command="{Binding LogoutCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <StackLayout Spacing="20" Padding="20">
+
+                <!-- Bienvenida -->
+                <Frame BackgroundColor="#667eea" CornerRadius="15" Padding="20" HasShadow="True">
+                    <StackLayout>
+                        <Label 
+                            Text="{Binding CurrentUser.Name, StringFormat='¡Hola, {0}!'}"
+                            FontSize="24"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+                        <Label 
+                            Text="Bienvenido a PaySecure"
+                            FontSize="16"
+                            TextColor="#E0E0E0" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Tarjetas de estadísticas -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+
+                    <!-- Balance total -->
+                    <Frame Grid.Column="0" BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                        <StackLayout Spacing="5">
+                            <Label Text="💰" FontSize="24" HorizontalOptions="Center" />
+                            <Label 
+                                Text="Balance Total"
+                                FontSize="12"
+                                TextColor="#666"
+                                HorizontalOptions="Center" />
+                            <Label 
+                                Text="{Binding TotalBalance, StringFormat='${0:F2}'}"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                TextColor="#28a745"
+                                HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
+                    <!-- Total transacciones -->
+                    <Frame Grid.Column="1" BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                        <StackLayout Spacing="5">
+                            <Label Text="📊" FontSize="24" HorizontalOptions="Center" />
+                            <Label 
+                                Text="Transacciones"
+                                FontSize="12"
+                                TextColor="#666"
+                                HorizontalOptions="Center" />
+                            <Label 
+                                Text="{Binding TotalTransactions}"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                TextColor="#007bff"
+                                HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+                <!-- Acciones rápidas -->
+                <Label 
+                    Text="Acciones Rápidas"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    Margin="0,10,0,5" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                    <!-- Realizar pago -->
+                    <Button 
+                        Grid.Column="0"
+                        Text="💳 Realizar Pago"
+                        Command="{Binding GoToPaymentsCommand}"
+                        BackgroundColor="#28a745"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="60" />
+
+                    <!-- Ver transacciones -->
+                    <Button 
+                        Grid.Column="1"
+                        Text="📋 Transacciones"
+                        Command="{Binding GoToTransactionsCommand}"
+                        BackgroundColor="#007bff"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="60" />
+                </Grid>
+
+                <!-- Transacciones recientes -->
+                <StackLayout>
+                    <Label 
+                        Text="Transacciones Recientes"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        Margin="0,20,0,10" />
+
+                    <!-- Lista de transacciones -->
+                    <Frame BackgroundColor="White" CornerRadius="15" Padding="0" HasShadow="True">
+                        <CollectionView ItemsSource="{Binding RecentTransactions}">
+                            <CollectionView.EmptyView>
+                                <StackLayout Padding="40">
+                                    <Label 
+                                        Text="📝"
+                                        FontSize="48"
+                                        HorizontalOptions="Center"
+                                        TextColor="#CCC" />
+                                    <Label 
+                                        Text="No hay transacciones recientes"
+                                        HorizontalOptions="Center"
+                                        TextColor="#999"
+                                        FontSize="16" />
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="20,15" ColumnSpacing="15">
+
+                                        <!-- Icono según tipo -->
+                                        <Label Grid.Column="0" VerticalOptions="Center">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0}">
+                                                    <Binding Path="Type" Converter="{StaticResource TransactionTypeToIconConverter}" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+
+                                        <!-- Descripción y fecha -->
+                                        <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <Label 
+                                                Text="{Binding Description}"
+                                                FontSize="16"
+                                                FontAttributes="Bold" />
+                                            <Label 
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                                FontSize="12"
+                                                TextColor="#666" />
+                                        </StackLayout>
+
+                                        <!-- Cantidad -->
+                                        <StackLayout Grid.Column="2" VerticalOptions="Center">
+                                            <Label 
+                                                Text="{Binding Amount, StringFormat='${0:F2}'}"
+                                                FontSize="16"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="End">
+                                                <Label.TextColor>
+                                                    <MultiBinding Converter="{StaticResource AmountToColorConverter}">
+                                                        <Binding Path="Amount" />
+                                                        <Binding Path="Type" />
+                                                    </MultiBinding>
+                                                </Label.TextColor>
+                                            </Label>
+                                            <Label 
+                                                Text="{Binding Status}"
+                                                FontSize="10"
+                                                TextColor="#666"
+                                                HorizontalOptions="End" />
+                                        </StackLayout>
+
+                                        <!-- Separador visual -->
+                                        <BoxView Grid.ColumnSpan="3" 
+                                               BackgroundColor="#F0F0F0" 
+                                               HeightRequest="1" 
+                                               VerticalOptions="End" 
+                                               Margin="0,10,0,0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Frame>
+
+                    <!-- Ver todas las transacciones -->
+                    <Button 
+                        Text="Ver Todas las Transacciones"
+                        Command="{Binding GoToTransactionsCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="#007bff"
+                        FontAttributes="Bold"
+                        Margin="0,10,0,0" />
+                </StackLayout>
+
+                <!-- Información del usuario -->
+                <Frame BackgroundColor="#f8f9fa" CornerRadius="15" Padding="20" Margin="0,20,0,0">
+                    <StackLayout>
+                        <Label 
+                            Text="👤 Información de la Cuenta"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Margin="0,0,0,10" />
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Email:" FontAttributes="Bold" />
+                            <Label Text="{Binding CurrentUser.Email}" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Teléfono:" FontAttributes="Bold" />
+                            <Label Text="{Binding CurrentUser.Phone}" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Biometría:" FontAttributes="Bold" />
+                            <Label Text="{Binding CurrentUser.IsBiometricEnabled, Converter={StaticResource BoolToYesNoConverter}}" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>
