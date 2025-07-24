@@ -1,7 +1,4 @@
 ﻿// Helpers/Constants.cs
-using System.Text;
-using System.Text.RegularExpressions;
-
 namespace PaySecure.Helpers;
 
 public static class Constants
@@ -23,11 +20,8 @@ public static class Constants
     public static class Database
     {
         public const string DatabaseFilename = "paySecure.db";
-        public const SQLite.SQLiteOpenFlags Flags =
-            SQLite.SQLiteOpenFlags.ReadWrite |
-            SQLite.SQLiteOpenFlags.Create |
-            SQLite.SQLiteOpenFlags.SharedCache;
 
+        // Remover referencias a SQLite.SQLiteOpenFlags - usar solo Entity Framework
         public static string DatabasePath =>
             Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
     }

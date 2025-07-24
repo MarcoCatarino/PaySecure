@@ -1,12 +1,103 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PaySecure.Views.AddTransactionPage"
-             Title="AddTransactionPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage 
+    x:Class="PaySecure.Views.AddTransactionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PaySecure.ViewModels"
+    x:DataType="vm:TransactionViewModel"
+    Title="Agregar Transacción">
+
+    <ScrollView>
+        <StackLayout Spacing="25" Padding="20">
+
+            <!-- Encabezado -->
+            <Frame BackgroundColor="#667eea" CornerRadius="15" Padding="20" HasShadow="True">
+                <StackLayout>
+                    <Label 
+                        Text="💰"
+                        FontSize="36"
+                        HorizontalOptions="Center"
+                        TextColor="White" />
+                    <Label 
+                        Text="Nueva Transacción"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Formulario -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="20">
+
+                    <!-- Descripción -->
+                    <StackLayout>
+                        <Label Text="Descripción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding Description}"
+                                Placeholder="Describe la transacción..."
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Cantidad -->
+                    <StackLayout>
+                        <Label Text="Cantidad (MXN) *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry 
+                                Text="{Binding Amount}"
+                                Placeholder="0.00"
+                                Keyboard="Numeric"
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Tipo -->
+                    <StackLayout>
+                        <Label Text="Tipo de Transacción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Picker 
+                                ItemsSource="{Binding TransactionTypes}"
+                                SelectedItem="{Binding SelectedType}"
+                                FontSize="16"
+                                BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Botones de acción -->
+                    <StackLayout Spacing="15" Margin="0,30,0,0">
+                        <Button 
+                            Text="💾 Guardar Transacción"
+                            Command="{Binding SaveTransactionCommand}"
+                            BackgroundColor="#28a745"
+                            TextColor="White"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            FontSize="16"
+                            FontAttributes="Bold" />
+
+                        <Button 
+                            Text="Cancelar"
+                            Command="{Binding CancelAddTransactionCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="#6c757d"
+                            FontAttributes="Bold" />
+                    </StackLayout>
+
+                </StackLayout>
+            </Frame>
+
+            <!-- Indicador de carga -->
+            <ActivityIndicator 
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#667eea"
+                HorizontalOptions="Center" />
+
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

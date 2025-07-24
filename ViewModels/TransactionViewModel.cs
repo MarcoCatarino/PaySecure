@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PaySecure.Models;
 using PaySecure.Services;
-using Stripe.V2;
 using System.Collections.ObjectModel;
 
 namespace PaySecure.ViewModels;
