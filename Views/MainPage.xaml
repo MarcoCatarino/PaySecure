@@ -9,6 +9,7 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Salir" Command="{Binding LogoutCommand}" />
+        <ToolbarItem Text="👤" Command="{Binding SwitchUserCommand}" />
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
@@ -19,7 +20,7 @@
                 <Frame BackgroundColor="#667eea" CornerRadius="15" Padding="20" HasShadow="True">
                     <StackLayout>
                         <Label 
-                            Text="{Binding CurrentUser.Name, StringFormat='¡Hola, {0}!'}"
+                            Text="{Binding WelcomeMessage}"
                             FontSize="24"
                             FontAttributes="Bold"
                             TextColor="White" />
@@ -75,6 +76,7 @@
                     Text="Acciones Rápidas"
                     FontSize="18"
                     FontAttributes="Bold"
+                    TextColor="#333"
                     Margin="0,10,0,5" />
 
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
@@ -105,6 +107,7 @@
                         Text="Transacciones Recientes"
                         FontSize="18"
                         FontAttributes="Bold"
+                        TextColor="#333"
                         Margin="0,20,0,10" />
 
                     <!-- Lista de transacciones -->
@@ -129,28 +132,26 @@
                                 <DataTemplate>
                                     <Grid ColumnDefinitions="Auto,*,Auto" Padding="20,15" ColumnSpacing="15">
 
-                                        <!-- Icono según tipo -->
-                                        <Label Grid.Column="0" VerticalOptions="Center">
-                                            <Label.Text>
-                                                <MultiBinding StringFormat="{}{0}">
-                                                    <Binding Path="Type" Converter="{StaticResource TransactionTypeToIconConverter}" />
-                                                </MultiBinding>
-                                            </Label.Text>
-                                        </Label>
+                                        <!-- Icono según tipo - CORREGIDO -->
+                                        <Label Grid.Column="0" 
+                                               VerticalOptions="Center" 
+                                               FontSize="20"
+                                               Text="{Binding Type, Converter={StaticResource TransactionTypeToIconConverter}}" />
 
                                         <!-- Descripción y fecha -->
                                         <StackLayout Grid.Column="1" VerticalOptions="Center">
                                             <Label 
                                                 Text="{Binding Description}"
                                                 FontSize="16"
-                                                FontAttributes="Bold" />
+                                                FontAttributes="Bold"
+                                                TextColor="#333" />
                                             <Label 
                                                 Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
                                                 FontSize="12"
                                                 TextColor="#666" />
                                         </StackLayout>
 
-                                        <!-- Cantidad -->
+                                        <!-- Cantidad - CORREGIDO -->
                                         <StackLayout Grid.Column="2" VerticalOptions="Center">
                                             <Label 
                                                 Text="{Binding Amount, StringFormat='${0:F2}'}"
@@ -193,28 +194,78 @@
                         Margin="0,10,0,0" />
                 </StackLayout>
 
-                <!-- Información del usuario -->
-                <Frame BackgroundColor="#f8f9fa" CornerRadius="15" Padding="20" Margin="0,20,0,0">
-                    <StackLayout>
-                        <Label 
-                            Text="👤 Información de la Cuenta"
-                            TextColor="DarkViolet"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            Margin="0,0,0,10" />
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Email: " TextColor="Black" FontAttributes="Bold" />
-                            <Label Text="{Binding CurrentUser.Email}" TextColor="Black" />
+                <!-- Información del usuario - CORREGIDA -->
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" Margin="0,20,0,0" HasShadow="True"
+                       IsVisible="{Binding HasUserData}">
+                    <StackLayout Spacing="15">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label 
+                                Text="👤"
+                                FontSize="20"
+                                VerticalOptions="Center" />
+                            <Label 
+                                Text="Información de la Cuenta"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                TextColor="#333"
+                                VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Teléfono: " TextColor="Black" FontAttributes="Bold" />
-                            <Label Text="{Binding CurrentUser.Phone}" TextColor="Black" />
+
+                        <!-- Información del perfil - CORREGIDA -->
+                        <StackLayout Spacing="10">
+
+                            <!-- Nombre -->
+                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                <Label Text="Nombre:" FontAttributes="Bold" TextColor="#333" FontSize="14" />
+                                <Label Text="{Binding CurrentUser.Name}" TextColor="#666" FontSize="14" />
+                            </StackLayout>
+
+                            <!-- Email -->
+                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                <Label Text="Email:" FontAttributes="Bold" TextColor="#333" FontSize="14" />
+                                <Label Text="{Binding CurrentUser.Email}" TextColor="#666" FontSize="14" />
+                            </StackLayout>
+
+                            <!-- Teléfono -->
+                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                <Label Text="Teléfono:" FontAttributes="Bold" TextColor="#333" FontSize="14" />
+                                <Label Text="{Binding CurrentUser.Phone}" TextColor="#666" FontSize="14" />
+                            </StackLayout>
+
+                            <!-- Biometría -->
+                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                <Label Text="Biometría:" FontAttributes="Bold" TextColor="#333" FontSize="14" />
+                                <Label Text="{Binding CurrentUser.IsBiometricEnabled, Converter={StaticResource BoolToYesNoConverter}}" 
+                                       TextColor="#666" FontSize="14" />
+                            </StackLayout>
+
+                            <!-- Fecha de registro -->
+                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                <Label Text="Registrado:" FontAttributes="Bold" TextColor="#333" FontSize="14" />
+                                <Label Text="{Binding CurrentUser.CreatedAt, StringFormat='{0:dd/MM/yyyy}'}" 
+                                       TextColor="#666" FontSize="14" />
+                            </StackLayout>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Biometría: " FontAttributes="Bold" TextColor="Black" />
-                            <Label Text="{Binding CurrentUser.IsBiometricEnabled, Converter={StaticResource BoolToYesNoConverter}}" TextColor="Black" />
-                        </StackLayout>
+
+                        <!-- Botón debug -->
+                        <Button 
+                            Text="🔍 Ver Info Detallada"
+                            Command="{Binding ShowDatabaseInfoCommand}"
+                            BackgroundColor="#17a2b8"
+                            TextColor="White"
+                            CornerRadius="10"
+                            FontSize="12"
+                            Margin="0,10,0,0" />
                     </StackLayout>
+                </Frame>
+
+                <!-- Mensaje si no hay datos -->
+                <Frame BackgroundColor="#f8d7da" CornerRadius="10" Padding="15" IsVisible="{Binding HasUserData, Converter={StaticResource InvertedBoolConverter}}">
+                    <Label 
+                        Text="⚠️ No se pudieron cargar los datos del usuario. Pull to refresh o reinicia la app."
+                        TextColor="#721c24"
+                        FontSize="14"
+                        HorizontalTextAlignment="Center" />
                 </Frame>
 
             </StackLayout>

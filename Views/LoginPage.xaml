@@ -18,7 +18,7 @@
         </Grid.Background>
 
         <ScrollView>
-            <StackLayout Spacing="30" Padding="40,80,40,40">
+            <StackLayout Spacing="30" Padding="40,60,40,40">
 
                 <!-- Logo y título -->
                 <StackLayout Spacing="20" HorizontalOptions="Center">
@@ -50,14 +50,22 @@
                         HorizontalTextAlignment="Center" />
                 </StackLayout>
 
-                <!-- Formulario de login -->
+                <!-- Formulario de LOGIN -->
                 <Frame 
                     BackgroundColor="White"
                     CornerRadius="20"
                     Padding="30"
-                    HasShadow="True">
+                    HasShadow="True"
+                    IsVisible="{Binding IsRegistering, Converter={StaticResource InvertedBoolConverter}}">
 
                     <StackLayout Spacing="20">
+                        <Label 
+                            Text="Iniciar Sesión"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="#333"
+                            HorizontalOptions="Center" />
+
                         <!-- Campo Email -->
                         <StackLayout>
                             <Label 
@@ -68,10 +76,11 @@
                             <Entry 
                                 Text="{Binding Email}"
                                 Placeholder="Ingresa tu email"
+                                PlaceholderColor="#999"
+                                TextColor="#333"
                                 Keyboard="Email"
                                 BackgroundColor="#F5F5F5"
-                                TextColor="Black"
-                                PlaceholderColor="#999" />
+                                FontSize="16" />
                         </StackLayout>
 
                         <!-- Botón login con email -->
@@ -82,6 +91,16 @@
                             TextColor="White"
                             CornerRadius="25"
                             HeightRequest="50"
+                            FontAttributes="Bold" />
+
+                        <!-- Botón demo rápido -->
+                        <Button 
+                            Text="🚀 Acceso Demo Rápido"
+                            Command="{Binding UseQuickDemoCommand}"
+                            BackgroundColor="#28a745"
+                            TextColor="White"
+                            CornerRadius="25"
+                            HeightRequest="45"
                             FontAttributes="Bold" />
 
                         <!-- Separador -->
@@ -116,37 +135,119 @@
                                 HorizontalTextAlignment="Center" />
                         </Frame>
 
-                        <!-- Estado del login -->
-                        <Label 
-                            Text="{Binding LoginStatus}"
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            HorizontalTextAlignment="Center"
-                            IsVisible="{Binding LoginStatus, Converter={StaticResource StringIsNotNullOrEmptyConverter}}" />
+                        <!-- Botón para mostrar registro -->
+                        <Button 
+                            Text="¿No tienes cuenta? Regístrate"
+                            Command="{Binding ShowRegisterCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="#667eea"
+                            FontAttributes="Bold" />
 
-                        <!-- Indicador de carga -->
-                        <ActivityIndicator 
-                            IsRunning="{Binding IsBusy}"
-                            IsVisible="{Binding IsBusy}"
-                            Color="#667eea" />
                     </StackLayout>
                 </Frame>
 
-                <!-- Información adicional -->
-                <StackLayout Spacing="10">
-                    <Label 
-                        Text="✨ Características principales:"
-                        TextColor="White"
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center" />
+                <!-- Formulario de REGISTRO -->
+                <Frame 
+                    BackgroundColor="White"
+                    CornerRadius="20"
+                    Padding="30"
+                    HasShadow="True"
+                    IsVisible="{Binding IsRegistering}">
 
-                    <StackLayout Spacing="5">
-                        <Label Text="• Gestión de transacciones con CRUD completo" TextColor="#E0E0E0" FontSize="12" />
-                        <Label Text="• Autenticación biométrica segura" TextColor="#E0E0E0" FontSize="12" />
-                        <Label Text="• Integración con Stripe para pagos" TextColor="#E0E0E0" FontSize="12" />
-                        <Label Text="• Base de datos SQLite local" TextColor="#E0E0E0" FontSize="12" />
+                    <StackLayout Spacing="20">
+                        <Label 
+                            Text="Crear Cuenta"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="#333"
+                            HorizontalOptions="Center" />
+
+                        <!-- Nombre -->
+                        <StackLayout>
+                            <Label Text="Nombre Completo *" FontSize="14" TextColor="#666" FontAttributes="Bold" />
+                            <Entry 
+                                Text="{Binding RegisterName}"
+                                Placeholder="Tu nombre completo"
+                                PlaceholderColor="#999"
+                                TextColor="#333"
+                                BackgroundColor="#F5F5F5"
+                                FontSize="16" />
+                        </StackLayout>
+
+                        <!-- Email -->
+                        <StackLayout>
+                            <Label Text="Email *" FontSize="14" TextColor="#666" FontAttributes="Bold" />
+                            <Entry 
+                                Text="{Binding RegisterEmail}"
+                                Placeholder="tu@email.com"
+                                PlaceholderColor="#999"
+                                TextColor="#333"
+                                Keyboard="Email"
+                                BackgroundColor="#F5F5F5"
+                                FontSize="16" />
+                        </StackLayout>
+
+                        <!-- Contraseña -->
+                        <StackLayout>
+                            <Label Text="Contraseña *" FontSize="14" TextColor="#666" FontAttributes="Bold" />
+                            <Entry 
+                                Text="{Binding RegisterPassword}"
+                                Placeholder="Mínimo 4 caracteres"
+                                PlaceholderColor="#999"
+                                TextColor="#333"
+                                IsPassword="True"
+                                BackgroundColor="#F5F5F5"
+                                FontSize="16" />
+                        </StackLayout>
+
+                        <!-- Teléfono -->
+                        <StackLayout>
+                            <Label Text="Teléfono (Opcional)" FontSize="14" TextColor="#666" FontAttributes="Bold" />
+                            <Entry 
+                                Text="{Binding RegisterPhone}"
+                                Placeholder="+52 55 1234 5678"
+                                PlaceholderColor="#999"
+                                TextColor="#333"
+                                Keyboard="Telephone"
+                                BackgroundColor="#F5F5F5"
+                                FontSize="16" />
+                        </StackLayout>
+
+                        <!-- Botón registrar -->
+                        <Button 
+                            Text="Crear Cuenta"
+                            Command="{Binding RegisterUserCommand}"
+                            BackgroundColor="#28a745"
+                            TextColor="White"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            FontAttributes="Bold" />
+
+                        <!-- Botón volver al login -->
+                        <Button 
+                            Text="¿Ya tienes cuenta? Iniciar Sesión"
+                            Command="{Binding ShowLoginCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="#667eea"
+                            FontAttributes="Bold" />
+
                     </StackLayout>
-                </StackLayout>
+                </Frame>
+
+                <!-- Estado del login/registro -->
+                <Label 
+                    Text="{Binding LoginStatus}"
+                    FontSize="14"
+                    TextColor="White"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="{Binding LoginStatus, Converter={StaticResource StringIsNotNullOrEmptyConverter}}" />
+
+                <!-- Indicador de carga -->
+                <ActivityIndicator 
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Color="White" />
 
             </StackLayout>
         </ScrollView>

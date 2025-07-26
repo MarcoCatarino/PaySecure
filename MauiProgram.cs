@@ -1,4 +1,4 @@
-﻿// MauiProgram.cs
+﻿// MauiProgram.cs - Con UserSessionService
 using CommunityToolkit.Maui;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -32,6 +32,7 @@ public static class MauiProgram
         // Registrar servicios
         builder.Services.AddSingleton<IBiometricService, BiometricService>();
         builder.Services.AddSingleton<IPaymentService, PaymentService>();
+        builder.Services.AddSingleton<IUserSessionService, UserSessionService>(); // NUEVO
         builder.Services.AddScoped<DatabaseService>();
 
         // Registrar ViewModels
