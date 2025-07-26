@@ -39,7 +39,9 @@ public class BiometricService : IBiometricService
             };
 
             var result = await CrossFingerprint.Current.AuthenticateAsync(request);
-            return result.Succeeded;
+
+            // Updated to use the 'Authenticated' property instead of 'Succeeded'
+            return result.Authenticated;
         }
         catch (Exception ex)
         {
@@ -75,5 +77,4 @@ public enum BiometricCapabilities
     NotEnrolled,
     NotAvailable,
     SecurityNotEnabled
-}
 }

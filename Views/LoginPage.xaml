@@ -70,6 +70,7 @@
                                 Placeholder="Ingresa tu email"
                                 Keyboard="Email"
                                 BackgroundColor="#F5F5F5"
+                                TextColor="Black"
                                 PlaceholderColor="#999" />
                         </StackLayout>
 

@@ -27,43 +27,48 @@
                 </StackLayout>
             </Frame>
 
-            <!-- Formulario -->
+            <!-- Formulario - CORREGIDO -->
             <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
                 <StackLayout Spacing="20">
 
-                    <!-- Descripción -->
+                    <!-- Descripción - CORREGIDO -->
                     <StackLayout>
                         <Label Text="Descripción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
-                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="10" HasShadow="False">
                             <Entry 
                                 Text="{Binding Description}"
                                 Placeholder="Describe la transacción..."
+                                PlaceholderColor="#999"
+                                TextColor="#333"
                                 FontSize="16"
                                 BackgroundColor="Transparent" />
                         </Frame>
                     </StackLayout>
 
-                    <!-- Cantidad -->
+                    <!-- Cantidad - CORREGIDO -->
                     <StackLayout>
                         <Label Text="Cantidad (MXN) *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
-                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="10" HasShadow="False">
                             <Entry 
                                 Text="{Binding Amount}"
                                 Placeholder="0.00"
+                                PlaceholderColor="#999"
+                                TextColor="#333"
                                 Keyboard="Numeric"
                                 FontSize="16"
                                 BackgroundColor="Transparent" />
                         </Frame>
                     </StackLayout>
 
-                    <!-- Tipo -->
+                    <!-- Tipo - CORREGIDO -->
                     <StackLayout>
                         <Label Text="Tipo de Transacción *" FontSize="16" FontAttributes="Bold" TextColor="#333" />
-                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="0" HasShadow="False">
+                        <Frame BackgroundColor="#f8f9fa" CornerRadius="10" Padding="5" HasShadow="False">
                             <Picker 
                                 ItemsSource="{Binding TransactionTypes}"
                                 SelectedItem="{Binding SelectedType}"
                                 FontSize="16"
+                                TextColor="#333"
                                 BackgroundColor="Transparent" />
                         </Frame>
                     </StackLayout>

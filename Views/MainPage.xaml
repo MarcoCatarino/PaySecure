@@ -198,20 +198,21 @@
                     <StackLayout>
                         <Label 
                             Text="👤 Información de la Cuenta"
+                            TextColor="DarkViolet"
                             FontSize="16"
                             FontAttributes="Bold"
                             Margin="0,0,0,10" />
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="Email:" FontAttributes="Bold" />
-                            <Label Text="{Binding CurrentUser.Email}" />
+                            <Label Text="Email: " TextColor="Black" FontAttributes="Bold" />
+                            <Label Text="{Binding CurrentUser.Email}" TextColor="Black" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="Teléfono:" FontAttributes="Bold" />
-                            <Label Text="{Binding CurrentUser.Phone}" />
+                            <Label Text="Teléfono: " TextColor="Black" FontAttributes="Bold" />
+                            <Label Text="{Binding CurrentUser.Phone}" TextColor="Black" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="Biometría:" FontAttributes="Bold" />
-                            <Label Text="{Binding CurrentUser.IsBiometricEnabled, Converter={StaticResource BoolToYesNoConverter}}" />
+                            <Label Text="Biometría: " FontAttributes="Bold" TextColor="Black" />
+                            <Label Text="{Binding CurrentUser.IsBiometricEnabled, Converter={StaticResource BoolToYesNoConverter}}" TextColor="Black" />
                         </StackLayout>
                     </StackLayout>
                 </Frame>

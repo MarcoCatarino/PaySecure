@@ -1,4 +1,3 @@
-// Views/AddTransactionPage.xaml.cs
 using PaySecure.ViewModels;
 
 namespace PaySecure.Views;
@@ -21,7 +20,6 @@ public partial class AddTransactionPage : ContentPage
         // Si hay un ID, cargar la transacción para editar
         if (!string.IsNullOrEmpty(TransactionId))
         {
-            // Implementar lógica de edición aquí
             Title = "Editar Transacción";
         }
     }
